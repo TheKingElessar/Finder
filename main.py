@@ -6,13 +6,24 @@ import csv
 
 import re
 
+import time
 
-def progress_bar(current, total, bar_length=20):
+for i in range(10):
+    print("\n")
+
+start = time.time()
+
+
+def progress_bar(current, total, found, bar_length = 20):
     percent = float(current) * 100 / total
     arrow = '█' * int(percent / 100 * bar_length - 1) + '○'
     spaces = ' ' * (bar_length - len(arrow))
 
-    print('Progress: [%s%s] %d %%' % (arrow, spaces, percent), end='\r')
+    end = time.time()
+
+    bar = f"\rProgress: [{arrow}{spaces}]  {format(round(percent * 10000) / 10000, '0.4f')}%.    Valid found: {found}.    Elapsed seconds: {format(end - start, '0.2f')}"
+
+    print(bar, end = '\r')
 
 
 def count_syllables(word):
@@ -148,10 +159,11 @@ ia = imdb.IMDb()
 
 output_file = Path("found.txt")
 
-with open('movies.csv', mode='r') as file:
+with open('movies.csv', mode = 'r', encoding = 'utf8') as file:
     csvFile = csv.reader(file)
     skipped = False
     movie_num = 0
+    found = 0
     for lines in csvFile:
         if not skipped:
             skipped = True
@@ -175,6 +187,7 @@ with open('movies.csv', mode='r') as file:
             result_title = result["title"]
             if count_syllables(result_title) == 2:
                 if result_title[-2:] == "er":
+                    found += 1
                     with output_file.open("a") as f:
                         f.write(result_title + f" ({result['year']})" + "\n")
-                    progress_bar(movie_num, 193886)
+        progress_bar(movie_num, 193886, found, 50)
