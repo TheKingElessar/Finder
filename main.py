@@ -148,7 +148,7 @@ ia = imdb.IMDb()
 
 output_file = Path("found.txt")
 
-with open('../../Downloads/ml-latest/ml-latest/movies.csv', mode='r') as file:
+with open('movies.csv', mode='r') as file:
     csvFile = csv.reader(file)
     skipped = False
     movie_num = 0
